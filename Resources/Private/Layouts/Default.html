@@ -1,0 +1,60 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:lfe="http://typo3.org/ns/SGalinski/Lfeditor/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<lfe:addCssFile cssFile="{f:uri.resource(path: 'StyleSheets/backend.css', extensionName: 'LfeditorImpexp')}" />
+
+<f:be.container>
+	<div class="module tx-lfeditor-impexp">
+		<div class="module-loading-indicator"></div>
+		<div class="module-docheader t3js-module-docheader">
+			<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
+				<div class="module-docheader-bar-column-left col-xs-12 col-sm-4 col-md-3">
+					<div class="form-inline row">
+						<div class="form-group form-group-sm col-xs-6">
+							<f:be.menus.actionMenu additionalAttributes="{class: 'form-control'}">
+								<f:be.menus.actionMenuItem label="Overview"
+								                           controller="ImportExport"
+								                           action="index" />
+							</f:be.menus.actionMenu>
+						</div>
+						<f:if condition="{canChangeEditingModes}">
+							<div class="form-group form-group-sm col-xs-6">
+								<f:be.menus.actionMenu additionalAttributes="{class: 'form-control'}">
+									<f:for each="{editingModeOptions}" key="editingModeOption" as="editingModeLabel">
+										<f:if condition="{editingMode} == {editingModeOption}">
+											<f:then>
+												<f:be.menus.actionMenuItem label="{editingModeLabel}"
+												                           controller="ImportExport"
+												                           action="setEditingMode"
+												                           arguments="{editingMode: editingModeOption}"
+												                           additionalAttributes="{selected: 'selected'}" />
+											</f:then>
+											<f:else>
+												<f:be.menus.actionMenuItem label="{editingModeLabel}"
+												                           controller="ImportExport"
+												                           action="setEditingMode"
+												                           arguments="{editingMode: editingModeOption}" />
+											</f:else>
+										</f:if>
+									</f:for>
+								</f:be.menus.actionMenu>
+							</div>
+						</f:if>
+					</div>
+				</div>
+			</div>
+			<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons">
+				<div class="module-docheader-bar-column-left">
+					<div class="btn-toolbar">
+						<f:render section="ButtonBarLeft" optional="true" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="module-body t3js-module-body">
+			<f:flashMessages />
+			<f:render section="main" />
+		</div>
+	</div>
+</f:be.container>

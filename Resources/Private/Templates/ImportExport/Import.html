@@ -1,0 +1,77 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:lfe="http://typo3.org/ns/SGalinski/Lfeditor/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default" />
+
+<f:section name="main">
+    <h1>Import/Exports</h1>
+
+    <h2>File: {extensionSelection}/{languageFileSelection}</h2>
+
+    <f:form enctype="multipart/form-data" method="post" action="import">
+        <f:form.hidden name="extensionSelection" value="{extensionSelection}" />
+        <f:form.hidden name="languageFileSelection" value="{languageFileSelection}" />
+
+        <div class="form-group">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="file">Upload a file:</label>
+                    <div class="form-control-wrap">
+                        <f:form.upload name="file" id="file" />
+                    </div>
+                    <div class="help-block">
+                        File format notice:
+                        <ul>
+                            <li>Format: CSV, separator: semi-column</li>
+                            <li>Encoding: UTF-8</li>
+                            <li>Expected columns: constant, default[, language key 1, ...]</li>
+                            <li>Language key must be valid and match existing language key in TYPO3.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <f:form.button type="submit" class="btn btn-default" name="operation" value="preview">Preview changes</f:form.button>
+            <f:form.button type="submit" class="btn btn-primary" name="operation" value="import">Import</f:form.button>
+        </div>
+    </f:form>
+
+    <f:if condition="{previewLangData}">
+        <h2>Preview of changes:</h2>
+
+        <f:be.infobox state="-1">
+            New changes are displayed in <span class="diff-g">green colored text</span> and the <span class="diff-r">red colored text</span> are the old values which will be removed.
+        </f:be.infobox>
+
+        <f:for each="{previewLangData}" key="lang" as="labels">
+            <h3>{lang}</h3>
+            <table class="table table-responsive table-hover tx-lfeditor-table diff">
+                <tbody>
+                    <tr>
+                        <th>Constant</th>
+                        <th>Label</th>
+                    </tr>
+                    <f:for each="{labels}" key="constant" as="diff">
+                        <tr>
+                            <td>{constant}</td>
+                            <td class="diff-item-result"><f:spaceless><f:format.raw>{diff}</f:format.raw></f:spaceless></td>
+                        </tr>
+                    </f:for>
+                </tbody>
+            </table>
+        </f:for>
+    </f:if>
+
+</f:section>
+
+<f:section name="ButtonBarLeft">
+    <f:link.action class="btn btn-default btn-sm" action="index" controller="ImportExport">
+        <core:icon identifier="actions-view-go-back" /> Back
+    </f:link.action>
+</f:section>
+
+</html>

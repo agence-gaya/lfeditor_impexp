@@ -1,0 +1,19 @@
+{
+  "name": "gaya/lfeditor-impexp",
+  "description": "TYPO3 extension. Add import/export functionality for LFEditor",
+  "type": "typo3-cms-extension",
+  "keywords": [
+    "TYPO3 translation lfeditor import export csv"
+  ],
+  "homepage": "https://github.com/agence-gaya/lfeditor_impexp",
+  "license": "GPL-2.0+",
+  "version": "1.0.0-dev",
+  "require": {
+    "sgalinski/lfeditor": "^5.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "GAYA\\LfeditorImpexp\\": "Classes/"
+    }
+  }
+}

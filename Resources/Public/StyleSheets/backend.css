@@ -1,0 +1,37 @@
+.tx-lfeditor-impexp table>tbody>tr>td {
+	text-align: left;
+	vertical-align: top;
+}
+.tx-lfeditor-impexp table>tbody>tr>th {
+	text-align: left;
+	vertical-align: top;
+	width: 20%;
+}
+.tx-lfeditor-impexp td.action {
+	width: 100px;
+	text-align: center;
+}
+
+.tx-lfeditor-impexp .diff {
+	background-color: #fff;
+	border: 1px solid #ccc;
+}
+
+.tx-lfeditor-impexp .diff-item-result {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	width: 100%;
+	white-space: normal;
+	word-break: break-word;
+}
+
+.tx-lfeditor-impexp .diff-item-result del {
+	color: #c80c05;
+	background-color: #fff6f6;
+	text-decoration: none
+}
+
+.tx-lfeditor-impexp .diff-item-result ins {
+	color: #44a512;
+	background-color: #ebfce3;
+	text-decoration: none
+}

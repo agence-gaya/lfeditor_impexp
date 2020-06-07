@@ -1,0 +1,57 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:lfe="http://typo3.org/ns/SGalinski/Lfeditor/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default" />
+
+<f:section name="main">
+    <h1>Import/Exports</h1>
+
+    <p>Imports and Exports are in CSV format. Files must be in UTF-8, with semi-column separator.</p>
+
+    <f:for each="{extensions}" as="extension" key="extAddress">
+        <f:if condition="{extension.isExtensionGroupStart}">
+            <f:then>
+                <h2>{extension.extLabel}</h2>
+            </f:then>
+            <f:else>
+                <table class="table table-responsive table-hover tx-lfeditor-table">
+                    <tbody>
+                    <f:for each="{extension.languageFileOptions}" as="langFileLabel" key="langFileOption" iteration="i">
+                        <tr>
+                            <f:if condition="{i.isFirst}">
+                                <th rowspan="{extension.languageFileOptions -> f:count()}">
+                                    {extension.extLabel}
+                                </th>
+                            </f:if>
+                            <td>
+                                {langFileLabel}
+                            </td>
+                            <td class="col-control nowrap">
+                                <div class="btn-group">
+                                    <f:link.action action="export" arguments="{extensionSelection: extAddress, languageFileSelection: langFileLabel}"
+                                                   title="Export to an external file" class="btn btn-default">
+                                        <core:icon identifier="actions-database-export" /> Export
+                                    </f:link.action>
+                                    <f:link.action action="import" arguments="{extensionSelection: extAddress, languageFileSelection: langFileLabel}"
+                                                   title="Import from an external file" class="btn btn-default">
+                                        <core:icon identifier="actions-database-import" /> Import
+                                    </f:link.action>
+                                </div>
+                            </td>
+                        </tr>
+                    </f:for>
+                    </tbody>
+                </table>
+            </f:else>
+        </f:if>
+    </f:for>
+
+</f:section>
+
+<f:section name="ButtonBarLeft">
+
+</f:section>
+
+</html>
