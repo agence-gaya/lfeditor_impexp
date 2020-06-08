@@ -26,6 +26,7 @@ $EM_CONF['lfeditor_impexp'] = [
         [
             'depends' =>
                 [
+                    'typo3' => '8.7.20-9.5.99',
                     'lfeditor' => '5.0.0-5.1.99',
                 ],
             'conflicts' =>
