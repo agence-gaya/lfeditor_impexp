@@ -7,7 +7,7 @@
   ],
   "homepage": "https://github.com/agence-gaya/lfeditor_impexp",
   "license": "GPL-2.0+",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "require": {
     "sgalinski/lfeditor": "^5.0.0"
   },
