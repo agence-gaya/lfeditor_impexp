@@ -47,6 +47,6 @@ class ExtensionUtility
             )->get('lfeditor_impexp');
         }
 
-        return \unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['lfeditor_impexp']) ?: [];
+        return GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('lfeditor_impexp') ?: [];
     }
 }

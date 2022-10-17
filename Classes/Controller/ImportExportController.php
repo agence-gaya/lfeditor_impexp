@@ -25,7 +25,12 @@ namespace GAYA\LfeditorImpexp\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
+use GAYA\LfeditorImpexp\Exception;
+use SGalinski\Lfeditor\Utility\Typo3Lib;
 use SGalinski\Lfeditor\Controller\AbstractBackendController;
 use SGalinski\Lfeditor\Exceptions\LFException;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -53,7 +58,7 @@ class ImportExportController extends AbstractBackendController
     /**
      * Displays the list of language files for all extensions
      *
-     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     * @throws NoSuchCacheException
      */
     public function indexAction()
     {
@@ -104,9 +109,9 @@ class ImportExportController extends AbstractBackendController
      * @param array $file
      * @param string $operation
      * @throws LFException
-     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException
+     * @throws NoSuchCacheException
+     * @throws StopActionException
+     * @throws UnsupportedRequestTypeException
      */
     public function importAction(string $extensionSelection, string $languageFileSelection, array $file = null, string $operation = null)
     {
@@ -121,7 +126,7 @@ class ImportExportController extends AbstractBackendController
             if (!is_uploaded_file($file['tmp_name'])
                 || $file['error'] !== \UPLOAD_ERR_OK
                 || !in_array($file['type'], ['text/csv', 'application/vnd.ms-excel'])
-                || !GeneralUtility::verifyFilenameAgainstDenyPattern($file['name'])
+                || !GeneralUtility::makeInstance(FileNameValidator::class)->isValid($file['name'])
             ) {
                 $this->addFlashMessage(
                     'An error occured with the uploaded file (upload error, wrong type, etc.)',
@@ -152,7 +157,7 @@ class ImportExportController extends AbstractBackendController
 
             try {
                 $newLangData = $fileExport->readFile($file['tmp_name']);
-            } catch (\GAYA\LfeditorImpexp\Exception $e) {
+            } catch (Exception $e) {
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Upload error',
@@ -241,7 +246,7 @@ class ImportExportController extends AbstractBackendController
      * Prepares language file select options for each extension and sets combined data in view.
      *
      * @return void
-     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     * @throws NoSuchCacheException
      * @throws LFException
      */
     protected function prepareExtensionAndLangFileOptions()
@@ -283,7 +288,7 @@ class ImportExportController extends AbstractBackendController
      */
     protected function getFilenameFromLanguageFilePath(string $languageFilePath)
     {
-        $extRelPath = \SGalinski\Lfeditor\Utility\Typo3Lib::transTypo3File($languageFilePath, false);
+        $extRelPath = Typo3Lib::transTypo3File($languageFilePath, false);
         $filename = str_replace('EXT:', '', $extRelPath);
         $filename = str_replace('/', '_', $filename);
 

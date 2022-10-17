@@ -25,7 +25,8 @@ namespace GAYA\LfeditorImpexp\Service;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use GAYA\LfeditorImpexp\Exception;
+use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportExportCsvService implements ImportExportInterface
@@ -99,13 +100,13 @@ class ImportExportCsvService implements ImportExportInterface
     /**
      * @param string $filePath
      * @return array
-     * @throws \GAYA\LfeditorImpexp\Exception
+     * @throws Exception
      */
     public function readFile(string $filePath)
     {
         $h = fopen($filePath, 'r');
         if ($h === false) {
-            throw new \GAYA\LfeditorImpexp\Exception('An error occured when reading the uploaded file');
+            throw new Exception('An error occured when reading the uploaded file');
         }
 
         $headers = [];
@@ -136,7 +137,7 @@ class ImportExportCsvService implements ImportExportInterface
      */
     protected function sendFileToBrowser(string $filePath, string $fileName)
     {
-        $fileInfo = new \TYPO3\CMS\Core\Type\File\FileInfo($filePath);
+        $fileInfo = new FileInfo($filePath);
         $mimeType = $fileInfo->getMimeType();
 
         switch ($mimeType) {

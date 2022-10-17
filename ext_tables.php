@@ -8,12 +8,12 @@ if (TYPO3_MODE === 'BE') {
 
     $lfeditorExtConf = \SGalinski\Lfeditor\Utility\ExtensionUtility::getExtensionConfiguration();
     TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'GAYA.LfeditorImpexp',
+        'LfeditorImpexp',
         $lfeditorExtConf['beMainModuleName'] ?? 'user',
         'LFEditorImpexp',
         'after:LFEditor',
         array(
-            'ImportExport' => 'index,import,export,setEditingMode',
+            \GAYA\LfeditorImpexp\Controller\ImportExportController::class => 'index,import,export,setEditingMode',
         ),
         array(
             'access' => 'user,group',
