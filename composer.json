@@ -6,7 +6,7 @@
     "homepage": "https://github.com/agence-gaya/lfeditor_impexp",
     "license": "GPL-2.0+",
     "require": {
-        "sgalinski/lfeditor": "^7.1",
+        "sgalinski/lfeditor": "^6.0 || ^7.1",
         "typo3/cms-core": "^10.4"
     },
     "autoload": {
@@ -19,5 +19,5 @@
             "extension-key": "lfeditor_impexp"
         }
     },
-    "version": "2.0.0"
+    "version": "2.0.1"
 }
