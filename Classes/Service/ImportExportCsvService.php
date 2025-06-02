@@ -34,25 +34,25 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportExportCsvService implements ImportExportInterface
 {
-    protected $langData;
+    protected array $langData;
 
-    protected $languageKeys = [];
+    protected array $languageKeys = [];
 
-    protected $defaultLanguageKey = '';
+    protected string $defaultLanguageKey = '';
 
-    protected $defaultLanguageData = [];
+    protected array $defaultLanguageData = [];
 
-    protected $csvDelimiter = ';';
+    protected string $csvDelimiter = ';';
 
-    public function setLangData(array $langData)
+    public function setLangData(array $langData): void
     {
         $this->langData = $langData;
         $this->defaultLanguageData = [];
     }
 
-    public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey)
+    public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey): void
     {
-        if ($this->langData === null) {
+        if (!isset($this->langData)) {
             throw new RuntimeException('langData must be set before setting languageKeys', 1559925897);
         }
 
@@ -67,7 +67,7 @@ class ImportExportCsvService implements ImportExportInterface
         sort($this->languageKeys);
     }
 
-    public function export(string $filename)
+    public function export(string $filename): void
     {
         $tempFilePath = GeneralUtility::tempnam('lfeditor_impexp_', '.csv');
         $f = fopen($tempFilePath, 'w');
@@ -98,10 +98,8 @@ class ImportExportCsvService implements ImportExportInterface
 
     /**
      * @throws Exception
-     *
-     * @return array
      */
-    public function readFile(string $filePath)
+    public function readFile(string $filePath): array
     {
         $h = fopen($filePath, 'r');
         if ($h === false) {
@@ -109,7 +107,7 @@ class ImportExportCsvService implements ImportExportInterface
         }
 
         $headers = [];
-        $langfileEditNewLangData = [];
+        $langFileEditNewLangData = [];
         $i = 0;
         while (($data = fgetcsv($h, 0, $this->csvDelimiter)) !== false) {
             if (++$i === 1) {
@@ -120,19 +118,19 @@ class ImportExportCsvService implements ImportExportInterface
             $constant = $data[0];
             for ($key = 1, $n = count($data); $key < $n; $key++) {
                 $langKey = $headers[$key];
-                $langfileEditNewLangData[$langKey][$constant] = $data[$key];
+                $langFileEditNewLangData[$langKey][$constant] = $data[$key];
             }
         }
 
         fclose($h);
 
-        return $langfileEditNewLangData;
+        return $langFileEditNewLangData;
     }
 
     /**
      * Send file to client browser.
      */
-    protected function sendFileToBrowser(string $filePath, string $fileName)
+    protected function sendFileToBrowser(string $filePath, string $fileName): void
     {
         $fileInfo = new FileInfo($filePath);
         $mimeType = $fileInfo->getMimeType();

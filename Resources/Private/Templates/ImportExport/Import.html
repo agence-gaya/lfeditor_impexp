@@ -1,7 +1,6 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
-      xmlns:lfe="http://typo3.org/ns/SGalinski/Lfeditor/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default" />
@@ -18,9 +17,10 @@
         <div class="form-group">
             <div class="form-section">
                 <div class="form-group">
-                    <label for="file">Upload a file:</label>
+                    <label for="files">Upload a file:</label>
                     <div class="form-control-wrap">
-                        <f:form.upload name="file" id="file" />
+                        <f:comment>Extbase argument force us to pass array of file (multiple = true) otherwise Arguments::setUploadedFiles() fails.</f:comment>
+                        <f:form.upload name="files" id="files" multiple="true" />
                     </div>
                     <div class="help-block">
                         File format notice:

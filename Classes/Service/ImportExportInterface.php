@@ -30,11 +30,11 @@ namespace GAYA\LfeditorImpexp\Service;
 
 interface ImportExportInterface
 {
-    public function setLangData(array $langData);
+    public function setLangData(array $langData): void;
 
-    public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey);
+    public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey): void;
 
-    public function export(string $filename);
+    public function export(string $filename): void;
 
-    public function readFile(string $filePath);
+    public function readFile(string $filePath): array;
 }

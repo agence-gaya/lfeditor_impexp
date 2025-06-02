@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  GAYA\LfeditorImpexp\:
+    resource: '../Classes/*'
+
+  GAYA\LfeditorImpexp\Service\:
+    resource: '../Classes/Service/*'
+    public: true
+    shared: false
