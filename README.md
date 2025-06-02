@@ -6,7 +6,7 @@ Add import/export functionality (csv) for LFEditor.
 
 ## Usage
 
-Like lfeditor, two modes are available.
+Like LFEditor, two modes are available.
 
 ### Extension mode
 
@@ -14,7 +14,7 @@ Mainly useful for developpers, this mode updates xlf files in extension director
 
 ### Override mode
 
-Same as lfedtitor extensio, this mode override extension files and save language file in  **typo3confLFEditorOverrideFiles**
+Same as LFEditor extension, this mode override extension files and save language file in LFEditor OverrideFiles directory.
 
 ## Credits
-&copy; 2020 GAYA Manufacture digitale [https://www.gaya.fr/]
+&copy; 2025 GAYA Manufacture digitale [https://www.gaya.fr/]
