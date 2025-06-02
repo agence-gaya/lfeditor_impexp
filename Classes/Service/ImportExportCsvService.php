@@ -32,27 +32,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ImportExportCsvService implements ImportExportInterface
 {
     protected $langData;
+
     protected $languageKeys = [];
+
     protected $defaultLanguageKey = '';
+
     protected $defaultLanguageData = [];
+
     protected $csvDelimiter = ';';
 
-    /**
-     * @param array $langData
-     */
     public function setLangData(array $langData)
     {
         $this->langData = $langData;
         $this->defaultLanguageData = [];
     }
 
-    /**
-     * @param array $languageKeys
-     * @param string $defaultLanguageKey
-     */
     public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey)
     {
-        if (!isset($this->langData)) {
+        if ($this->langData === null) {
             throw new \RuntimeException("langData must be set before setting languageKeys", 1559925897);
         }
 
@@ -60,15 +57,13 @@ class ImportExportCsvService implements ImportExportInterface
         $this->defaultLanguageKey = $defaultLanguageKey;
         $this->defaultLanguageData = $this->langData[$this->defaultLanguageKey] ?? [];
 
-        if (($i = array_search($this->defaultLanguageKey, $this->languageKeys)) !== false) {
+        if (($i = array_search($this->defaultLanguageKey, $this->languageKeys, true)) !== false) {
             unset($this->languageKeys[$i]);
         }
+
         sort($this->languageKeys);
     }
 
-    /**
-     * @param string $filename
-     */
     public function export(string $filename)
     {
         $tempFilePath = GeneralUtility::tempnam('lfeditor_impexp_', '.csv');
@@ -89,6 +84,7 @@ class ImportExportCsvService implements ImportExportInterface
             foreach ($this->languageKeys as $languageKey) {
                 $row[] = $this->langData[$languageKey][$constant] ?? '';
             }
+
             fputcsv($f, $row, $this->csvDelimiter);
         }
 
@@ -98,7 +94,6 @@ class ImportExportCsvService implements ImportExportInterface
     }
 
     /**
-     * @param string $filePath
      * @return array
      * @throws Exception
      */
@@ -106,7 +101,7 @@ class ImportExportCsvService implements ImportExportInterface
     {
         $h = fopen($filePath, 'r');
         if ($h === false) {
-            throw new Exception('An error occured when reading the uploaded file');
+            throw new Exception('An error occured when reading the uploaded file', 6254764780);
         }
 
         $headers = [];
@@ -124,6 +119,7 @@ class ImportExportCsvService implements ImportExportInterface
                 $langfileEditNewLangData[$langKey][$constant] = $data[$key];
             }
         }
+
         fclose($h);
 
         return $langfileEditNewLangData;
@@ -131,20 +127,15 @@ class ImportExportCsvService implements ImportExportInterface
 
     /**
      * Send file to client browser
-     *
-     * @param string $filePath
-     * @param string $fileName
      */
     protected function sendFileToBrowser(string $filePath, string $fileName)
     {
         $fileInfo = new FileInfo($filePath);
         $mimeType = $fileInfo->getMimeType();
 
-        switch ($mimeType) {
-            case 'application/zip':
-                //android want it uppercase
-                $fileName = basename($fileName, '.zip').'.ZIP';
-                break;
+        if ($mimeType === 'application/zip') {
+            //android want it uppercase
+            $fileName = basename($fileName, '.zip').'.ZIP';
         }
 
         // http://perishablepress.com/http-headers-file-downloads/

@@ -25,6 +25,8 @@ namespace GAYA\LfeditorImpexp\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -37,7 +39,6 @@ use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\DiffUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use GAYA\LfeditorImpexp\Service\ImportExportFactory;
 
 /**
@@ -45,10 +46,13 @@ use GAYA\LfeditorImpexp\Service\ImportExportFactory;
  */
 class ImportExportController extends AbstractBackendController
 {
+    public $objectManager;
+
     /**
      * @param ViewInterface $view
+     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView($view)
     {
         $view->assign('editingMode', $this->session->getDataByKey('editingMode'));
         $view->assign('editingModeOptions', $this->configurationService->getAvailableEditingModes());
@@ -60,24 +64,24 @@ class ImportExportController extends AbstractBackendController
      *
      * @throws NoSuchCacheException
      */
-    public function indexAction()
+    public function indexAction(): ResponseInterface
     {
         try {
             $this->prepareExtensionAndLangFileOptions();
-        } catch (LFException $e) {
-            $this->addLFEFlashMessage($e);
+        } catch (LFException $lfException) {
+            $this->addLFEFlashMessage($lfException);
         }
+
+        return $this->htmlResponse();
     }
 
     /**
      * Export the language file
      *
-     * @param string $extensionSelection
-     * @param string $languageFileSelection
      * @return string
      * @throws LFException
      */
-    public function exportAction(string $extensionSelection, string $languageFileSelection)
+    public function exportAction(string $extensionSelection, string $languageFileSelection): ResponseInterface
     {
         $lfeditorConfig = $this->configurationService->getExtConfig();
 
@@ -96,11 +100,11 @@ class ImportExportController extends AbstractBackendController
         $fileExport = ImportExportFactory::getImportExportService('csv');
         $fileExport->setLangData($langData);
         $fileExport->setLanguageKeys($languageKeys, $defaultLanguage);
+
         $filename = $this->getFilenameFromLanguageFilePath($extensionSelection.'/'.$languageFileSelection);
         $fileExport->export($filename);
 
-        // stop the Extbase rendering
-        return '';
+        return $this->htmlResponse('');
     }
 
     /**
@@ -108,6 +112,12 @@ class ImportExportController extends AbstractBackendController
      * @param string $languageFileSelection
      * @param array $file
      * @param string $operation
+     * @throws LFException
+     * @throws NoSuchCacheException
+     * @throws StopActionException
+     * @throws UnsupportedRequestTypeException
+     */
+    /**
      * @throws LFException
      * @throws NoSuchCacheException
      * @throws StopActionException
@@ -131,10 +141,10 @@ class ImportExportController extends AbstractBackendController
                 $this->addFlashMessage(
                     'An error occured with the uploaded file (upload error, wrong type, etc.)',
                     'Upload error',
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
-                return;
+                return null;
             }
 
             $lfeditorConfig = $this->configurationService->getExtConfig();
@@ -161,10 +171,10 @@ class ImportExportController extends AbstractBackendController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Upload error',
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
-                return;
+                return null;
             }
 
             if ($operation === 'preview') {
@@ -172,50 +182,45 @@ class ImportExportController extends AbstractBackendController
                 $previewLangData = $this->prepareDiff($langData, $newLangData);
                 $this->view->assign('previewLangData', $previewLangData);
 
-                return;
+                return null;
             }
 
             // write changes
             try {
-                $this->configurationService->execWrite($newLangData, array(), false, $languageKeys);
+                $this->configurationService->execWrite($newLangData, [], false, $languageKeys);
             } catch (LFException $e) {
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Import error',
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
-                return;
+                return null;
             }
 
             // confirm and redirect
             $this->addFlashMessage(
                 'Language file has been imported',
                 'Success',
-                AbstractMessage::OK
+                ContextualFeedbackSeverity::OK
             );
 
-            $this->redirect('index');
+            return $this->redirect('index');
         }
+
+        return null;
     }
 
-    /**
-     * @param string $editingMode
-     */
-    public function setEditingModeAction(string $editingMode)
+    public function setEditingModeAction(string $editingMode): ResponseInterface
     {
         if ($this->session->getDataByKey('canChangeEditingModes')) {
             $this->session->setDataByKey('editingMode', $editingMode);
-            $this->redirect('index');
+            return $this->redirect('index');
         }
     }
 
     /**
      * Renders HTML table-rows with the comparison information of an sys_history entry record
-     *
-     * @param array $sourceLangData
-     * @param array $newLangData
-     * @return array
      */
     protected function prepareDiff(array $sourceLangData, array $newLangData): array
     {
@@ -249,6 +254,7 @@ class ImportExportController extends AbstractBackendController
      * @throws NoSuchCacheException
      * @throws LFException
      */
+    #[\Override]
     protected function prepareExtensionAndLangFileOptions()
     {
         /** @var CacheManager $cacheManager */
@@ -269,11 +275,13 @@ class ImportExportController extends AbstractBackendController
                             continue;
                         }
                     }
-                } catch (LFException $e) {
+                } catch (LFException) {
                     continue;
                 }
+
                 $extensions[$extAddress] = $extension;
             }
+
             $cacheManager->getCache('lfeditor_impexp')->set('extensions', $extensions);
         }
 
@@ -283,16 +291,14 @@ class ImportExportController extends AbstractBackendController
     /**
      * Build the name of the exported file from the absolute path
      *
-     * @param string $languageFilePath
      * @return mixed
      */
     protected function getFilenameFromLanguageFilePath(string $languageFilePath)
     {
         $extRelPath = Typo3Lib::transTypo3File($languageFilePath, false);
         $filename = str_replace('EXT:', '', $extRelPath);
-        $filename = str_replace('/', '_', $filename);
 
-        return $filename;
+        return str_replace('/', '_', $filename);
     }
 
 }

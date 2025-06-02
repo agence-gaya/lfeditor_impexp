@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ImportExportFactory
 {
     /**
-     * @param string $format
      * @return ImportExportInterface
      */
     public static function getImportExportService(string $format)
@@ -40,7 +39,7 @@ class ImportExportFactory
             || !class_exists(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['lfeditor_impexp']['importExportClasses'][$format]
             )) {
-            throw new \InvalidArgumentException("No ImportExport class definition found for $format", 1559922975);
+            throw new \InvalidArgumentException('No ImportExport class definition found for ' . $format, 1559922975);
         }
 
         /** @var ImportExportInterface $instance */

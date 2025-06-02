@@ -36,8 +36,6 @@ class ExtensionUtility
 {
     /**
      * Get the extension configuration
-     *
-     * @return array
      */
     public static function getExtensionConfiguration(): array
     {
