@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use GAYA\LfeditorImpexp\Controller\ImportExportController;
 use SGalinski\Lfeditor\Utility\ExtensionUtility;
 

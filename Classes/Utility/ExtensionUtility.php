@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GAYA\LfeditorImpexp\Utility;
 
 /***************************************************************
@@ -30,12 +32,12 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class ExtensionUtility
+ * Class ExtensionUtility.
  */
 class ExtensionUtility
 {
     /**
-     * Get the extension configuration
+     * Get the extension configuration.
      */
     public static function getExtensionConfiguration(): array
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GAYA\LfeditorImpexp\Controller;
 
 /***************************************************************
@@ -25,21 +27,22 @@ namespace GAYA\LfeditorImpexp\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
-use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use GAYA\LfeditorImpexp\Exception;
-use SGalinski\Lfeditor\Utility\Typo3Lib;
+use GAYA\LfeditorImpexp\Service\ImportExportFactory;
+use Override;
+use Psr\Http\Message\ResponseInterface;
 use SGalinski\Lfeditor\Controller\AbstractBackendController;
 use SGalinski\Lfeditor\Exceptions\LFException;
+use SGalinski\Lfeditor\Utility\Typo3Lib;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\DiffUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use GAYA\LfeditorImpexp\Service\ImportExportFactory;
 
 /**
  * EditFile controller. It contains extbase actions of EditFile page.
@@ -50,7 +53,7 @@ class ImportExportController extends AbstractBackendController
 
     /**
      * @param ViewInterface $view
-     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
+     * @param ViewInterface $view
      */
     protected function initializeView($view)
     {
@@ -60,7 +63,7 @@ class ImportExportController extends AbstractBackendController
     }
 
     /**
-     * Displays the list of language files for all extensions
+     * Displays the list of language files for all extensions.
      *
      * @throws NoSuchCacheException
      */
@@ -76,10 +79,11 @@ class ImportExportController extends AbstractBackendController
     }
 
     /**
-     * Export the language file
+     * Export the language file.
+     *
+     * @throws LFException
      *
      * @return string
-     * @throws LFException
      */
     public function exportAction(string $extensionSelection, string $languageFileSelection): ResponseInterface
     {
@@ -101,7 +105,7 @@ class ImportExportController extends AbstractBackendController
         $fileExport->setLangData($langData);
         $fileExport->setLanguageKeys($languageKeys, $defaultLanguage);
 
-        $filename = $this->getFilenameFromLanguageFilePath($extensionSelection.'/'.$languageFileSelection);
+        $filename = $this->getFilenameFromLanguageFilePath($extensionSelection . '/' . $languageFileSelection);
         $fileExport->export($filename);
 
         return $this->htmlResponse('');
@@ -110,8 +114,9 @@ class ImportExportController extends AbstractBackendController
     /**
      * @param string $extensionSelection
      * @param string $languageFileSelection
-     * @param array $file
+     * @param array  $file
      * @param string $operation
+     *
      * @throws LFException
      * @throws NoSuchCacheException
      * @throws StopActionException
@@ -123,7 +128,7 @@ class ImportExportController extends AbstractBackendController
      * @throws StopActionException
      * @throws UnsupportedRequestTypeException
      */
-    public function importAction(string $extensionSelection, string $languageFileSelection, array $file = null, string $operation = null)
+    public function importAction(string $extensionSelection, string $languageFileSelection, ?array $file = null, ?string $operation = null)
     {
         $this->view->assignMultiple(
             [
@@ -220,7 +225,7 @@ class ImportExportController extends AbstractBackendController
     }
 
     /**
-     * Renders HTML table-rows with the comparison information of an sys_history entry record
+     * Renders HTML table-rows with the comparison information of an sys_history entry record.
      */
     protected function prepareDiff(array $sourceLangData, array $newLangData): array
     {
@@ -250,11 +255,10 @@ class ImportExportController extends AbstractBackendController
     /**
      * Prepares language file select options for each extension and sets combined data in view.
      *
-     * @return void
      * @throws NoSuchCacheException
      * @throws LFException
      */
-    #[\Override]
+    #[Override]
     protected function prepareExtensionAndLangFileOptions()
     {
         /** @var CacheManager $cacheManager */
@@ -266,7 +270,7 @@ class ImportExportController extends AbstractBackendController
             foreach ($extensionOptions as $extAddress => $extLabel) {
                 $extension['extLabel'] = $extLabel;
                 $extension['languageFileOptions'] = [];
-                $isExtensionGroupStart = $extAddress === '###extensionGroup###'.$extLabel;
+                $isExtensionGroupStart = $extAddress === '###extensionGroup###' . $extLabel;
                 $extension['isExtensionGroupStart'] = $isExtensionGroupStart;
                 try {
                     if (!$isExtensionGroupStart) {
@@ -289,7 +293,7 @@ class ImportExportController extends AbstractBackendController
     }
 
     /**
-     * Build the name of the exported file from the absolute path
+     * Build the name of the exported file from the absolute path.
      *
      * @return mixed
      */

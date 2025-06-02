@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GAYA\LfeditorImpexp\Service;
 
 /***************************************************************
@@ -26,6 +28,7 @@ namespace GAYA\LfeditorImpexp\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportExportFactory
@@ -39,7 +42,7 @@ class ImportExportFactory
             || !class_exists(
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['lfeditor_impexp']['importExportClasses'][$format]
             )) {
-            throw new \InvalidArgumentException('No ImportExport class definition found for ' . $format, 1559922975);
+            throw new InvalidArgumentException('No ImportExport class definition found for ' . $format, 1559922975);
         }
 
         /** @var ImportExportInterface $instance */

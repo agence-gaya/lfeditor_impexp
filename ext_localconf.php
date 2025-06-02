@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use GAYA\LfeditorImpexp\Service\ImportExportCsvService;
 
 if (!defined('TYPO3')) {
-	die('Access denied.');
+    die('Access denied.');
 }
 
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['lfeditor_impexp'])) {
@@ -11,5 +13,5 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['lfeditor_impexp']['importExportClasses'] = [
-    'csv' => ImportExportCsvService::class
+    'csv' => ImportExportCsvService::class,
 ];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GAYA\LfeditorImpexp;
 
 /***************************************************************
@@ -26,7 +28,4 @@ namespace GAYA\LfeditorImpexp;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class Exception extends \Exception
-{
-
-}
+class Exception extends \Exception {}

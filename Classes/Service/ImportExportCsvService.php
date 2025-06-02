@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GAYA\LfeditorImpexp\Service;
 
 /***************************************************************
@@ -26,6 +28,7 @@ namespace GAYA\LfeditorImpexp\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use GAYA\LfeditorImpexp\Exception;
+use RuntimeException;
 use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -50,7 +53,7 @@ class ImportExportCsvService implements ImportExportInterface
     public function setLanguageKeys(array $languageKeys, string $defaultLanguageKey)
     {
         if ($this->langData === null) {
-            throw new \RuntimeException("langData must be set before setting languageKeys", 1559925897);
+            throw new RuntimeException('langData must be set before setting languageKeys', 1559925897);
         }
 
         $this->languageKeys = $languageKeys;
@@ -89,13 +92,14 @@ class ImportExportCsvService implements ImportExportInterface
         }
 
         fclose($f);
-        $this->sendFileToBrowser($tempFilePath, $filename.'.csv');
+        $this->sendFileToBrowser($tempFilePath, $filename . '.csv');
         GeneralUtility::unlink_tempfile($tempFilePath);
     }
 
     /**
-     * @return array
      * @throws Exception
+     *
+     * @return array
      */
     public function readFile(string $filePath)
     {
@@ -126,7 +130,7 @@ class ImportExportCsvService implements ImportExportInterface
     }
 
     /**
-     * Send file to client browser
+     * Send file to client browser.
      */
     protected function sendFileToBrowser(string $filePath, string $fileName)
     {
@@ -135,16 +139,16 @@ class ImportExportCsvService implements ImportExportInterface
 
         if ($mimeType === 'application/zip') {
             //android want it uppercase
-            $fileName = basename($fileName, '.zip').'.ZIP';
+            $fileName = basename($fileName, '.zip') . '.ZIP';
         }
 
         // http://perishablepress.com/http-headers-file-downloads/
         header('Pragma: no-cache');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, no-cache, post-check=0, pre-check=0');
-        header('Content-Type: '.$mimeType);
-        header('Content-Disposition: attachment; filename="'.$fileName.'"');
-        header('Content-Length: '.$fileInfo->getSize());
+        header('Content-Type: ' . $mimeType);
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Content-Length: ' . $fileInfo->getSize());
 
         ob_end_clean();
         @readfile($filePath);
