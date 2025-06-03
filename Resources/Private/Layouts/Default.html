@@ -1,10 +1,7 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:lfe="http://typo3.org/ns/SGalinski/Lfeditor/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<lfe:addCssFile cssFile="{f:uri.resource(path: 'StyleSheets/backend.css', extensionName: 'LfeditorImpexp')}" />
-
-<f:be.container>
+<f:be.container includeCssFiles="{ 0: 'EXT:lfeditor_impexp/Resources/Public/StyleSheets/backend.css' }">
 	<div class="module tx-lfeditor-impexp">
 		<div class="module-loading-indicator"></div>
 		<div class="module-docheader t3js-module-docheader">
