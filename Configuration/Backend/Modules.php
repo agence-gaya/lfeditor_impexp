@@ -3,15 +3,12 @@
 declare(strict_types=1);
 
 use GAYA\LfeditorImpexp\Controller\ImportExportController;
-use SGalinski\Lfeditor\Utility\ExtensionUtility;
-
-$lfeditorExtConf = ExtensionUtility::getExtensionConfiguration();
 
 return [
     'user_lfeditorImpexp' => [
-        'parent' => $lfeditorExtConf['beMainModuleName'] ?? 'user',
+        'parent' => 'system',
         'position' => [
-            'after' => 'user_lfeditor',
+            'after' => 'system_lfeditor',
         ],
         'access' => 'user',
         'labels' => 'LLL:EXT:lfeditor_impexp/Resources/Private/Language/locallang_mod.xlf',
