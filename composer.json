@@ -7,7 +7,7 @@
     "license": "GPL-2.0+",
     "require": {
 		"php": "8.3.*",
-        "sgalinski/lfeditor": "^9.0",
+        "sgalinski/lfeditor": "^9.0 || ^10",
         "typo3/cms-core": "^13.4"
     },
     "autoload": {
@@ -20,5 +20,5 @@
             "extension-key": "lfeditor_impexp"
         }
     },
-    "version": "13.0.0"
+    "version": "13.0.1"
 }
