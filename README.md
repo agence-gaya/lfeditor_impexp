@@ -17,4 +17,4 @@ Mainly useful for developpers, this mode updates xlf files in extension director
 Same as LFEditor extension, this mode override extension files and save language file in LFEditor OverrideFiles directory.
 
 ## Credits
-&copy; 2025 GAYA Manufacture digitale [https://www.gaya.fr/]
+&copy; 2026 GAYA Manufacture digitale [https://www.gaya.fr/]
