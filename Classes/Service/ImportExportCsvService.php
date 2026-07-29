@@ -77,7 +77,7 @@ class ImportExportCsvService implements ImportExportInterface
             'default',
         ];
         $headers = array_merge($headers, $this->languageKeys);
-        fputcsv($f, $headers, $this->csvDelimiter);
+        fputcsv($f, $headers, $this->csvDelimiter, escape: '\\');
 
         foreach ($this->defaultLanguageData as $constant => $value) {
             $row = [
@@ -88,7 +88,7 @@ class ImportExportCsvService implements ImportExportInterface
                 $row[] = $this->langData[$languageKey][$constant] ?? '';
             }
 
-            fputcsv($f, $row, $this->csvDelimiter);
+            fputcsv($f, $row, $this->csvDelimiter, escape: '\\');
         }
 
         fclose($f);
@@ -109,7 +109,7 @@ class ImportExportCsvService implements ImportExportInterface
         $headers = [];
         $langFileEditNewLangData = [];
         $i = 0;
-        while (($data = fgetcsv($h, 0, $this->csvDelimiter)) !== false) {
+        while (($data = fgetcsv($h, 0, $this->csvDelimiter, escape: '\\')) !== false) {
             if (++$i === 1) {
                 $headers = $data;
                 continue;

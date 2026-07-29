@@ -33,6 +33,8 @@ use Override;
 use Psr\Http\Message\ResponseInterface;
 use SGalinski\Lfeditor\Controller\AbstractBackendController;
 use SGalinski\Lfeditor\Exceptions\LFException;
+use SGalinski\Lfeditor\Service\ConfigurationService;
+use SGalinski\Lfeditor\Session\PhpSession;
 use SGalinski\Lfeditor\Utility\Typo3Lib;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
@@ -47,6 +49,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ImportExportController extends AbstractBackendController
 {
+    /**
+     * Initializes the actions.
+     * - Initializes the session object.
+     * - Fetches configuration.
+     *
+     * @throws DirectoryAccessRightsException
+     */
+    public function __construct(PhpSession $session, ConfigurationService $configurationService, private readonly CacheManager $cacheManager)
+    {
+        parent::__construct($session, $configurationService);
+    }
+
     #[Override]
     protected function commonViewRenderingActionSettings()
     {
@@ -76,8 +90,6 @@ class ImportExportController extends AbstractBackendController
      * Export the language file.
      *
      * @throws LFException
-     *
-     * @return string
      */
     public function exportAction(string $extensionSelection, string $languageFileSelection): ResponseInterface
     {
@@ -248,8 +260,7 @@ class ImportExportController extends AbstractBackendController
     #[Override]
     protected function prepareExtensionAndLangFileOptions(): void
     {
-        /** @var CacheManager $cacheManager */
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $cacheManager = $this->cacheManager;
         $extensions = $cacheManager->getCache('lfeditor_impexp')->get('extensions');
         if (empty($extensions)) {
             $extensions = [];
