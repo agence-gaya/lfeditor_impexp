@@ -2,9 +2,9 @@
       xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
+<f:layout name="Module" />
 
-<f:section name="main">
+<f:section name="Content">
     <h1>Import/Exports</h1>
 
     <p>Imports and Exports are in CSV format. Files must be in UTF-8, with semicolon separator.</p>
@@ -21,7 +21,7 @@
                         <f:for each="{extension.languageFileOptions}" as="langFileLabel" key="langFileOption" iteration="i">
                             <tr>
                                 <f:if condition="{i.isFirst}">
-                                    <th rowspan="{extension.languageFileOptions -> f:count()}">
+                                    <th class="col-fieldname" rowspan="{extension.languageFileOptions -> f:count()}">
                                         {extension.extLabel}
                                     </th>
                                 </f:if>
@@ -48,10 +48,6 @@
             </f:else>
         </f:if>
     </f:for>
-
-</f:section>
-
-<f:section name="ButtonBarLeft">
 
 </f:section>
 

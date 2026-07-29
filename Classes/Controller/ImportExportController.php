@@ -36,6 +36,7 @@ use SGalinski\Lfeditor\Exceptions\LFException;
 use SGalinski\Lfeditor\Service\ConfigurationService;
 use SGalinski\Lfeditor\Session\PhpSession;
 use SGalinski\Lfeditor\Utility\Typo3Lib;
+use TYPO3\CMS\Backend\Template\Components\ComponentFactory;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Http\UploadedFile;
@@ -43,6 +44,7 @@ use TYPO3\CMS\Core\Resource\Security\FileNameValidator;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\DiffUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * EditFile controller. It contains extbase actions of EditFile page.
@@ -56,9 +58,27 @@ class ImportExportController extends AbstractBackendController
      *
      * @throws DirectoryAccessRightsException
      */
-    public function __construct(PhpSession $session, ConfigurationService $configurationService, private readonly CacheManager $cacheManager)
-    {
+    public function __construct(
+        PhpSession $session,
+        ConfigurationService $configurationService,
+        private readonly CacheManager $cacheManager,
+        private readonly ComponentFactory $componentFactory,
+    ) {
         parent::__construct($session, $configurationService);
+    }
+
+    #[Override]
+    public function initializeAction(): void
+    {
+        parent::initializeAction();
+        $moduleTitle = LocalizationUtility::translate(
+            'LLL:EXT:lfeditor_impexp/Resources/Private/Language/locallang_mod.xlf:mlang_tabs_tab'
+        ) ?? 'LFEditor Import/Export';
+        $this->moduleTemplate->setTitle($moduleTitle);
+        $this->moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'user_lfeditorImpexp',
+            $moduleTitle,
+        );
     }
 
     #[Override]
@@ -125,6 +145,9 @@ class ImportExportController extends AbstractBackendController
      */
     public function importAction(string $extensionSelection, string $languageFileSelection, ?array $files = null, ?string $operation = null): ResponseInterface
     {
+        $this->moduleTemplate->addButtonToButtonBar(
+            $this->componentFactory->createBackButton($this->uriBuilder->reset()->uriFor('index'))
+        );
         $this->moduleTemplate->assignMultiple(
             [
                 'extensionSelection' => $extensionSelection,
